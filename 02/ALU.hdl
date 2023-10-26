@@ -40,5 +40,24 @@ CHIP ALU {
         ng;      // (out < 0,  1, 0)
 
     PARTS:
-    //// Replace this comment with your code.
+    // x 전처리
+    Mux16(a=x, b=false, sel=zx, out=tx);
+    Not16(in=tx, out=nottx);
+    Mux16(a=tx, b=nottx, sel=nx, out=fx);
+
+    // y 전처리
+    Mux16(a=y, b=false, sel=zy, out=ty);
+    Not16(in=ty, out=notty);
+    Mux16(a=ty, b=notty, sel=ny, out=fy);
+
+    // +와 and 선택
+    Add16(a=fx, b= fy, out=addxy);
+    And16(a=fx, b= fy, out=andxy);
+    Mux16(a=andxy, b=addxy, sel=f, out=fxy);
+
+    // 반전 여부
+    Not16(in=fxy, out=notfxy);
+    Mux16(a=fxy, b=notfxy, sel=no, out=tout, out=out);
+
+    Comparator(in=tout, zr=zr, ng=ng);
 }
